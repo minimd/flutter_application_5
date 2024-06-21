@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart ' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_5/data/categories.dart';
 import 'package:flutter_application_5/models/category.dart';
 import 'package:flutter_application_5/models/grocery_item.dart';
@@ -21,11 +21,16 @@ class _NewItemState extends State<NewItem> {
   void _saveItem() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Navigator.of(context).pop(GroceryItem(
-          id: DateTime.now().toString(),
-          category: _selectedCategory,
-          name: _enteredName,
-          quantity: _enteredQuantity));
+      final url = Uri.https(
+          'flutter-app-testa-default-rtdb.firebaseio.com', 'shpping-list.json');
+      http.post(url,
+          headers: {'content-type': 'application/json'},
+          body: json.encode({
+            'category': _selectedCategory.title,
+            'name': _enteredName,
+            'quantity': _enteredQuantity
+          }));
+      // Navigator.of(context).pop(      );
     }
   }
 
